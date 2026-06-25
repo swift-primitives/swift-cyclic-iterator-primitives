@@ -13,11 +13,25 @@ public import Cardinal_Primitives
 public import Cyclic_Group_Static_Primitives
 public import Cyclic_Namespace_Primitives
 public import Iterable
+public import Iterator_Chunk_Primitives
+public import Iterator_Primitive
 
 // MARK: - Iterable Conformance
 
 extension Cyclic.Group.Static: @retroactive Iterable {
-    /// Creates an iterator over all elements of this cyclic group.
+    /// The materializing iterator that satisfies Iterable's associated iterator requirement.
+    @_implements(Iterable,Iterator)  // swiftlint:disable:this comma
+    public typealias IterableIterator = Iterator_Primitive.Iterator.Materializing<Iterator>
+
+    /// Iterable's span witness: wraps the scalar cyclic iterator in the generator materialize adapter.
+    @inlinable
+    @_lifetime(borrow self)
+    @_implements(Iterable,makeIterator())  // swiftlint:disable:this comma
+    public borrowing func iterableMakeIterator() -> Iterator_Primitive.Iterator.Materializing<Iterator> {
+        Iterator_Primitive.Iterator.Materializing(Iterator())
+    }
+
+    /// Creates an iterator over all elements of this cyclic group (scalar; serves Swift.Sequence).
     ///
     /// Elements are produced in order from 0 to `modulus - 1`.
     @inlinable
