@@ -55,6 +55,13 @@ extension Cyclic.Group.Static.Iterator {
     @inlinable
     public mutating func next() -> Cyclic.Group.Static<modulus>.Element? {
         guard current < bound else { return nil }
+        // swift-linter:disable:next unchecked call site
+        // REASON: typed-system bottom-out — `current < bound` is checked on
+        // the line above, so `current` is already known in-bounds for
+        // `modulus`; `.retag()`/`.map()` have no bearing here because the
+        // source (`Ordinal`) and destination (`Element`) are different
+        // nominal types related only by this extension-init boundary
+        // documented on `Cyclic.Group.Static.Element.init(__unchecked:)`.
         let element = Cyclic.Group.Static<modulus>.Element(__unchecked: current)
         current += Cardinal.one
         return element

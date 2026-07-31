@@ -1,12 +1,18 @@
 import Cyclic_Iterator_Primitives
 import Testing
 
-@Suite("Cyclic Iterator Tests")
-struct CyclicIteratorTests {
+// `Cyclic.Group.Static` is generic (`Cyclic.Group.Static<modulus>`), so the
+// tests use the parallel namespace pattern per [SWIFT-TEST-003] rather than
+// an extension on the source type.
+
+@Suite
+struct `Cyclic Iterator Tests` {
     @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
 }
 
-extension CyclicIteratorTests.Unit {
+extension `Cyclic Iterator Tests`.Unit {
     @Test
     func `count equals the modulus`() {
         let count: Cardinal = Cyclic.Group.Static<5>.count
@@ -24,10 +30,10 @@ extension CyclicIteratorTests.Unit {
 
     @Test
     func `element positions are zero through four in order`() {
-        var positions: [Ordinal] = []
-        for element in Cyclic.Group.Static<5>() {
-            positions.append(element.position)
+        let elements: [Cyclic.Group.Static<5>.Element] = Array(Cyclic.Group.Static<5>())
+        let expected: [Cyclic.Group.Static<5>.Element] = (0..<5).map {
+            Cyclic.Group.Static<5>.Element(wrapping: Ordinal(UInt($0)))
         }
-        #expect(positions == [0, 1, 2, 3, 4])
+        #expect(elements == expected)
     }
 }
