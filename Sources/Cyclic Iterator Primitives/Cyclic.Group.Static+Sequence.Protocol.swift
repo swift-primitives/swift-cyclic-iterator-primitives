@@ -27,7 +27,9 @@ extension Cyclic.Group.Static: @retroactive Iterable {
     @inlinable
     @_lifetime(borrow self)
     @_implements(Iterable,makeIterator())  // swiftlint:disable:this comma
-    public borrowing func iterableMakeIterator() -> Iterator_Primitive.Iterator.Materializing<Iterator> {
+    public borrowing func iterableMakeIterator()
+        -> Iterator_Primitive.Iterator.Materializing<Iterator>
+    {
         Iterator_Primitive.Iterator.Materializing(Iterator())
     }
 
