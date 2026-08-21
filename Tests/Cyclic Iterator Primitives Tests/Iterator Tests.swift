@@ -1,10 +1,6 @@
 import Cyclic_Iterator_Primitives
 import Testing
 
-// `Cyclic.Group.Static` is generic (`Cyclic.Group.Static<modulus>`), so the
-// tests use the parallel namespace pattern per [SWIFT-TEST-003] rather than
-// an extension on the source type.
-
 @Suite
 struct `Cyclic Iterator Tests` {
     @Suite struct Unit {}

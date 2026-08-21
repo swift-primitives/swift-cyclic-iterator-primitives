@@ -1,14 +1,3 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-primitives open source project
-//
-// Copyright (c) 2024-2026 Coen ten Thije Boonkkamp and the swift-primitives project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
 public import Cardinal_Primitives
 public import Cyclic_Group_Static_Primitives
 public import Cyclic_Namespace_Primitives
@@ -16,56 +5,37 @@ public import Iterable
 public import Iterator_Chunk_Primitives
 public import Iterator_Primitive
 
-// MARK: - Iterable Conformance
-
 extension Cyclic.Group.Static: @retroactive Iterable {
-    /// The materializing iterator that satisfies Iterable's associated iterator requirement.
-    @_implements(Iterable,Iterator)  // swiftlint:disable:this comma
+
+    @_implements(Iterable,Iterator)
     public typealias IterableIterator = Iterator_Primitive.Iterator.Materializing<Iterator>
 
-    /// Iterable's span witness: wraps the scalar cyclic iterator in the generator materialize adapter.
     @inlinable
     @_lifetime(borrow self)
-    @_implements(Iterable,makeIterator())  // swiftlint:disable:this comma
+    @_implements(Iterable,makeIterator())
     public borrowing func iterableMakeIterator()
         -> Iterator_Primitive.Iterator.Materializing<Iterator>
     {
         Iterator_Primitive.Iterator.Materializing(Iterator())
     }
 
-    /// Creates an iterator over all elements of this cyclic group (scalar; serves Swift.Sequence).
-    ///
-    /// Elements are produced in order from 0 to `modulus - 1`.
     @inlinable
     public func makeIterator() -> Iterator {
         Iterator()
     }
 }
 
-// MARK: - Swift.Sequence Conformance
-
-/// Enables `for-in` loops and stdlib algorithm compatibility.
-///
-/// Since `Cyclic.Group.Static` and its `Element` are both `Copyable`, dual conformance
-/// to both `Sequence.Protocol` and `Swift.Sequence` is supported with no
-/// additional implementation required.
 extension Cyclic.Group.Static: @retroactive Swift.Sequence {
-    /// The number of elements in this group (exact count known at compile time).
+
     @inlinable
     public var underestimatedCount: Int { Self.modulus }
 }
 
-// MARK: - Group Properties
-
 extension Cyclic.Group.Static {
-    /// The number of elements in this cyclic group.
-    ///
-    /// This is a compile-time constant derived from the generic parameter.
+
     @inlinable
     public static var count: Cardinal {
-        // reason: modulus > 0 by Cyclic.Group.Static<modulus> documented contract; Cardinal(Int) only throws on negative input.
-        // swift-format-ignore: NeverUseForceTry
-        // swiftlint:disable:next force_try
+
         try! Cardinal(modulus)
     }
 }
